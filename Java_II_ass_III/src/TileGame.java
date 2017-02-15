@@ -6,27 +6,22 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import java.awt.event.ActionEvent;
-import java.awt.Label;
 import java.awt.TextField;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Panel;
-import java.awt.TextArea;
-import java.awt.Button;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Color;
 
 public class TileGame {
 	public static void main(String[] args){
 		TileFrame frame = new TileFrame();
 		frame.setTitle("Tile Game");
 		frame.setVisible(true);
+
 	}
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
+			randomise();
+
 			final int DEFAULT_FRAME_WIDTH = 500;
 			final int DEFAULT_FRAME_HEIGHT = 400;
 			setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
@@ -48,6 +43,7 @@ public class TileGame {
 			
 			// TODO Auto-generated method stub
 			footerText = new TextField();
+			footerText.setFont(new Font("Courier", 1, 12));
 			footerPanel.add(footerText);
 			
 			shuffleButton = new JButton("Shuffle");
@@ -126,7 +122,8 @@ public class TileGame {
 			buttonPanel.add(x4y3);
 			//x4
 			x4y4 = new JButton();
-			x4y4.addActionListener(this);
+//			x4y4.addActionListener(this);
+			x4y4.setEnabled(false);
 			buttonPanel.add(x4y4);
 			
 		}
@@ -165,19 +162,57 @@ public class TileGame {
 			}
 		}
 		
+		private void swapNumbers(ActionEvent e){
+			prev = curr;
+			
+			for(int i=0;i<tiles.length;i++){
+				if(tiles[i] == e.getActionCommand().toString()){
+					curr = i;
+				}
+			}
+			
+			if(prev > -1 && curr > -1){
+				temp = tiles[prev];
+				tiles[prev] = tiles[curr];
+				tiles[curr] = temp;
+				setButtons();
+				prev = -1;
+				curr = -1;
+			}
+			
+			
+		}
+		
+		private static boolean winCondition(){
+			for(int i=0; i<tiles.length;i++){
+				if(Integer.parseInt(tiles[i]) != i+1){
+					return false;
+				}
+			}
+			return true;
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource() == shuffleButton){
+				curr = -1;
 				randomise();
 				setButtons();
+			}else{
+				swapNumbers(e);
+				if(winCondition()){
+					footerText.setText("WIN!!!");
+				}
 			}
 			
 		}
 		
-	private String[] tiles = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"};	
+	private static String[] tiles = new String[15];	
 	private JPanel buttonPanel, footerPanel;
 	private JButton shuffleButton, x1y1, x1y2, x1y3, x1y4, x2y1, x2y2, x2y3, x2y4, x3y1, x3y2, x3y3, x3y4, x4y1, x4y2, x4y3, x4y4;
 	private TextField footerText;
+	private int prev = -1, curr = -1;
+	private String temp;
 	}
 }
