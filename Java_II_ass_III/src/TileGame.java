@@ -1,10 +1,8 @@
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
 import java.awt.event.ActionEvent;
 import java.awt.TextField;
 import java.awt.Font;
@@ -22,16 +20,19 @@ public class TileGame {
 		public TileFrame(){
 			randomise();
 
-			final int DEFAULT_FRAME_WIDTH = 500;
-			final int DEFAULT_FRAME_HEIGHT = 400;
+			final int DEFAULT_FRAME_WIDTH = 400;
+			final int DEFAULT_FRAME_HEIGHT = 250;
 			setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
 			
 			addButtons();
 			
 			addFooter();
 			
-			setLayout(new GridLayout(2, 1));
-			add(buttonPanel); 
+			setLayout(new GridLayout(5, 1));
+			add(buttonPanel1); 
+			add(buttonPanel2); 
+			add(buttonPanel3); 
+			add(buttonPanel4); 
 			add(footerPanel);
 
 
@@ -44,6 +45,7 @@ public class TileGame {
 			// TODO Auto-generated method stub
 			footerText = new TextField();
 			footerText.setFont(new Font("Courier", 1, 12));
+			footerText.setEditable(false);
 			footerPanel.add(footerText);
 			
 			shuffleButton = new JButton("Shuffle");
@@ -54,77 +56,86 @@ public class TileGame {
 
 		private void addButtons() {
 			
-			buttonPanel = new JPanel();
-			buttonPanel.setLayout(new GridLayout(4,4));
+			buttonPanel1 = new JPanel();
+			buttonPanel1.setLayout(new GridLayout(1,4));
 			
 			//x1
 			x1y1 = new JButton(tiles[0]);
 			x1y1.addActionListener(this);
-			buttonPanel.add(x1y1);
+			buttonPanel1.add(x1y1);
 			//x1 
 			x1y2 = new JButton(tiles[1]);
 			x1y2.addActionListener(this);
-			buttonPanel.add(x1y2);
+			buttonPanel1.add(x1y2);
 			//x1
 			x1y3 = new JButton(tiles[2]);
 			x1y3.addActionListener(this);
-			buttonPanel.add(x1y3);
+			buttonPanel1.add(x1y3);
 			//x1
 			x1y4 = new JButton(tiles[3]);
 			x1y4.addActionListener(this);
-			buttonPanel.add(x1y4);
+			buttonPanel1.add(x1y4);
+
+			buttonPanel2 = new JPanel();
+			buttonPanel2.setLayout(new GridLayout(1,4));
 
 			//x2
 			x2y1 = new JButton(tiles[4]);
 			x2y1.addActionListener(this);
-			buttonPanel.add(x2y1);
+			buttonPanel2.add(x2y1);
 			//x2 
 			x2y2 = new JButton(tiles[5]);
 			x2y2.addActionListener(this);
-			buttonPanel.add(x2y2);
+			buttonPanel2.add(x2y2);
 			//x2
 			x2y3 = new JButton(tiles[6]);
 			x2y3.addActionListener(this);
-			buttonPanel.add(x2y3);
+			buttonPanel2.add(x2y3);
 			//x2
 			x2y4 = new JButton(tiles[7]);
 			x2y4.addActionListener(this);
-			buttonPanel.add(x2y4);
+			buttonPanel2.add(x2y4);
+
+			buttonPanel3 = new JPanel();
+			buttonPanel3.setLayout(new GridLayout(1,4));
 
 			//x3
 			x3y1 = new JButton(tiles[8]);
 			x3y1.addActionListener(this);
-			buttonPanel.add(x3y1);
+			buttonPanel3.add(x3y1);
 			//x3 
 			x3y2 = new JButton(tiles[9]);
 			x3y2.addActionListener(this);
-			buttonPanel.add(x3y2);
+			buttonPanel3.add(x3y2);
 			//x3
 			x3y3 = new JButton(tiles[10]);
 			x3y3.addActionListener(this);
-			buttonPanel.add(x3y3);
+			buttonPanel3.add(x3y3);
 			//x3
 			x3y4 = new JButton(tiles[11]);
 			x3y4.addActionListener(this);
-			buttonPanel.add(x3y4);
+			buttonPanel3.add(x3y4);
 			
+			buttonPanel4 = new JPanel();
+			buttonPanel4.setLayout(new GridLayout(1,4));
+
 			//x4
 			x4y1 = new JButton(tiles[12]);
 			x4y1.addActionListener(this);
-			buttonPanel.add(x4y1);
+			buttonPanel4.add(x4y1);
 			//x4 
 			x4y2 = new JButton(tiles[13]);
 			x4y2.addActionListener(this);
-			buttonPanel.add(x4y2);
+			buttonPanel4.add(x4y2);
 			//x4
 			x4y3 = new JButton(tiles[14]);
 			x4y3.addActionListener(this);
-			buttonPanel.add(x4y3);
+			buttonPanel4.add(x4y3);
 			//x4
 			x4y4 = new JButton();
-//			x4y4.addActionListener(this);
+			x4y4.addActionListener(this);
 			x4y4.setEnabled(false);
-			buttonPanel.add(x4y4);
+			buttonPanel4.add(x4y4);
 			
 		}
 
@@ -197,6 +208,7 @@ public class TileGame {
 			// TODO Auto-generated method stub
 			if(e.getSource() == shuffleButton){
 				curr = -1;
+				footerText.setText(" ");
 				randomise();
 				setButtons();
 			}else{
@@ -209,7 +221,7 @@ public class TileGame {
 		}
 		
 	private static String[] tiles = new String[15];	
-	private JPanel buttonPanel, footerPanel;
+	private JPanel buttonPanel1, buttonPanel2, buttonPanel3, buttonPanel4, footerPanel;
 	private JButton shuffleButton, x1y1, x1y2, x1y3, x1y4, x2y1, x2y2, x2y3, x2y4, x3y1, x3y2, x3y3, x3y4, x4y1, x4y2, x4y3, x4y4;
 	private TextField footerText;
 	private int prev = -1, curr = -1;
