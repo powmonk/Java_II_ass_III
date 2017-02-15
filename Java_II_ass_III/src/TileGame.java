@@ -1,4 +1,5 @@
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -61,8 +62,7 @@ public class TileGame {
 			buttonPanel.setLayout(new GridLayout(4,4));
 			
 			//x1
-			x1y1 = new JButton();
-			x1y1.setText(tiles[0]);
+			x1y1 = new JButton(tiles[0]);
 			x1y1.addActionListener(this);
 			buttonPanel.add(x1y1);
 			//x1 
@@ -131,12 +131,46 @@ public class TileGame {
 			
 		}
 
+		private void setButtons(){
+			x1y1.setText(tiles[0]);
+			x1y2.setText(tiles[1]);
+			x1y3.setText(tiles[2]);
+			x1y4.setText(tiles[3]);
+			x2y1.setText(tiles[4]);
+			x2y2.setText(tiles[5]);
+			x2y3.setText(tiles[6]);
+			x2y4.setText(tiles[7]);
+			x3y1.setText(tiles[8]);
+			x3y2.setText(tiles[9]);
+			x3y3.setText(tiles[10]);
+			x3y4.setText(tiles[11]);
+			x4y1.setText(tiles[12]);
+			x4y2.setText(tiles[13]);
+			x4y3.setText(tiles[14]);
+
+		}
+
+		private void randomise(){
+			int random;
+			ArrayList<String> seqOrder = new ArrayList<String>();
+			
+			for(int i=1; i<=15; i++){
+				seqOrder.add(Integer.toString(i));
+			}
+
+			for(int i=0; i<15; i++){
+				random = (int)(Math.random()*seqOrder.size());
+				tiles[i] = seqOrder.get(random);
+				seqOrder.remove(random);
+			}
+		}
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			if(e.getSource() == shuffleButton){
-				tiles[0] = "shuffle";
-				x1y1.setText(tiles[0]);
+				randomise();
+				setButtons();
 			}
 			
 		}
