@@ -1,6 +1,9 @@
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -8,7 +11,6 @@ import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 
 public class TileGame {
@@ -16,20 +18,21 @@ public class TileGame {
 		TileFrame frame = new TileFrame();
 		frame.setTitle("Tile Game");
 		frame.setVisible(true);
+		
+		
 	}
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-			final int DEFAULT_FRAME_WIDTH = 400;
-			final int DEFAULT_FRAME_HEIGHT = 250;
-			//this.setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
-			this.setMinimumSize(new Dimension(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT));
-
-			randomise();
 			
-			addButtons();
+		
 			
-			addFooter();
+			this.setMinimumSize(new Dimension(400, 250));
+			this.setResizable(false);
+			
+			randomise();  //randomises the numbers in the tiles array			
+			addButtons(); //adds N buttons to N panels
+			addFooter();  //adds a footer panel 
 			
 			setLayout(new GridLayout(JPnls.size()+1, 1));
 			for(int i=0;i<JPnls.size();i++){
@@ -43,18 +46,16 @@ public class TileGame {
 			//This method creates the 2x1 footer panel
 			footerPanel = new JPanel();
 			footerPanel.setLayout(new GridLayout());
-			
+			//Create/add the JTextArea
 			footerText = new JTextArea();
-			footerText.setFont(new Font("Courier", 1, 12));
 			footerText.setEditable(false);
 			footerText.setLineWrap(true);
 			footerText.setWrapStyleWord(true);
 			footerPanel.add(footerText);
-			
+			//Create/add the shuffle button
 			shuffleButton = new JButton("Shuffle");
 			shuffleButton.addActionListener(this);
 			footerPanel.add(shuffleButton);
-			
 		}
 
 		private void addButtons() {
@@ -62,10 +63,9 @@ public class TileGame {
 			for(int i=0;i<N;i++){
 				JPnls.add(i, new JPanel());
 				JPnls.get(i).setLayout(new GridLayout(1,4));
-				
+				//Here the buttons are created by using the inner and outer loop counter for X/Y positions
 				for(int j=0; j<N; j++){
-					//Here the buttons are created by using the inner and outer loop counter for X + Y positions
-					JBtns[i][j] = new JButton();
+					JBtns[i][j] = new JButton(lightIcon);
 					JBtns[i][j].addActionListener(this);
 					JPnls.get(i).add(JBtns[i][j]);
 				}
@@ -107,7 +107,6 @@ public class TileGame {
 			//This method uses the X/Y position of the blank tile to determine the
 			//surrounding tiles
 			int[] blank = getBlank();
-
 			// This block is a bit dense. It first excludes any numbers outside the range of the 2D array
 			// and then check if the button being pressed is one of the ones adjacent to the blank tile.
 			// If both condition are met then it returns true.
@@ -123,17 +122,12 @@ public class TileGame {
 			int num = -1;
 			
 			for(int i=0; i<tiles.length; i++){
-				if(tiles[i] == ""){
-					blank = i;
-				}
-				if(tiles[i] == e.getActionCommand()){
-					num = i;
-				}
+				if(tiles[i] == "") blank = i;
+				if(tiles[i] == e.getActionCommand()) num = i;
 			}
 			
 			tiles[blank] = e.getActionCommand();
 			tiles[num] = "";
-			
 			setButtons();
 		}
 		
@@ -143,15 +137,12 @@ public class TileGame {
 				// This try-catch stops the contents of the empty tile being compared to a number
 				try{
 					parsed = Integer.parseInt(tiles[i]);
-					System.out.println(parsed);
 				}catch(NumberFormatException e) { 
 			    	return false; 
 			    }catch(NullPointerException e) {
 			    	return false;
 			    }
-				if(i+1 != parsed){
-					return false;
-				}
+				if(i+1 != parsed) return false;
 			}
 			return true;
 		}
@@ -160,13 +151,10 @@ public class TileGame {
 			for(int i=0;i<N;i++){
 				for(int j=0;j<N;j++){
 					JBtns[i][j].setBackground(null);
-					if(JBtns[i][j].getActionCommand() == ""){
-						JBtns[i][j].setBackground(new Color(220,220,220));
-					}
+					if(JBtns[i][j].getActionCommand() == "") JBtns[i][j].setBackground(new Color(220,220,220));
 				}
 			}
 		}
-
 		
 		private int[] getBlank(){
 			// This method returns the X/Y location of the blank tile in the 2d array
@@ -182,14 +170,6 @@ public class TileGame {
 			}
 			return blankTile;
 		}
-		
-		//this method is used for testing the win condition. I should probably remove before submitting this...
-		private void order(){
-			for(int i=1; i<tiles.length; i++){
-				tiles[i-1] = Integer.toString(i);
-			}
-			tiles[tiles.length-1] = "";
-		}
 
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == shuffleButton){
@@ -202,17 +182,18 @@ public class TileGame {
 					if(isValidMove(e.getSource())){
 						footerText.setText("");
 						swapTiles(e);
+						if(winCondition(tiles)) footerText.setText("Winner!!");
 					}else{
 						footerText.setText("You need to pick a tile adjacent to the empty tile");
 					}
-				}else if(winCondition(tiles)){
-					footerText.setText("WIN!!!");
 				}
 			}
 		}
 		
+		
+	static Icon lightIcon = new ImageIcon("button.bmp");
 	private static final int N = 4;
-	private  String[] tiles = new String[N*N];	
+	private String[] tiles = new String[N*N];
 	private JPanel footerPanel;
 	private JButton shuffleButton;
 	private List<JPanel> JPnls = new ArrayList<JPanel>();
