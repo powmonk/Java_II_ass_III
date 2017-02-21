@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
@@ -19,11 +20,12 @@ public class TileGame {
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-			randomise();
-
 			final int DEFAULT_FRAME_WIDTH = 400;
 			final int DEFAULT_FRAME_HEIGHT = 250;
-			setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
+			//this.setSize(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
+			this.setMinimumSize(new Dimension(DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT));
+
+			randomise();
 			
 			addButtons();
 			
@@ -34,10 +36,11 @@ public class TileGame {
 				add(JPnls.get(i)); 
 			}
 			add(footerPanel);
+			footerText.setText("Arrange the numbers into numerical order");
 		}
 		
 		private void addFooter() {
-			//ignore this comment
+			//This method creates the 2x1 footer panel
 			footerPanel = new JPanel();
 			footerPanel.setLayout(new GridLayout());
 			
@@ -79,6 +82,7 @@ public class TileGame {
 					count++;
 				}
 			}
+			setColor();
 		}
 
 		private void randomise(){
@@ -99,146 +103,120 @@ public class TileGame {
 			}
 		}
 		
-		private void swapNumbers(ActionEvent e){
-			prev = curr;
-			//this loop compares the tiles array to the command value of the button to check if a number and assign it to curr
-			for(int i=0;i<tiles.length;i++){
-				if(tiles[i] == e.getActionCommand().toString() ){
-					curr = i;
-					footerText.setText("");
-				}
-			}
+		private boolean isValidMove(Object e) {
+			//This method uses the X/Y position of the blank tile to determine the
+			//surrounding tiles
+			int[] blank = getBlank();
 
-			// if(prev > -1 && tiles[curr] != ""){
-			// 	footerText.setText("No!");
-			// } 
-				
-			if(prev > -1 && curr > -1){
-				temp = tiles[prev];
-				tiles[prev] = tiles[curr];
-				tiles[curr] = temp;
-				setButtons();
-				prev = -1;
-				curr = -1;
-				resetButtons();
-			}
-		}
-
-		private void resetButtons() {
-			for(int i=0;i<N;i++){
-				for(int j=0;j<N;j++){
-					JBtns[i][j].setBackground(null);
-					JBtns[i][j].setSelected(false);
-				}
-			}
-		}
-
-
-		private void setTiles(ActionEvent e){
-			for(int i=0;i<N;i++){
-				for(int j=0;j<N;j++){
-					if(JBtns[i][j] == e.getSource()){
-						JBtns[i][j].setBackground(activeTile);
-					}
-				}
-			}
-		}
-
-		private static boolean isValidMove(Object e) {
-			for(int i=0;i<N;i++){
-				for(int j=0;j<N;j++){
-					if(JBtns[i][j].getBackground() == activeTile){
- 					}
-
-					if(JBtns[i][j].getActionCommand() == ""){
-						if(JBtns[i][j] == e){return true;}
-						if(i-1 > -1){if(JBtns[i-1][j] == e){return true;};}
-						if(i+1 <  N){if(JBtns[i+1][j] == e){return true;};}
-						if(j-1 > -1){if(JBtns[i][j-1] == e){return true;};}
-						if(j+1 <  N){if(JBtns[i][j+1] == e){return true;};}
-					}
-				}
-			}
-			
+			// This block is a bit dense. It first excludes any numbers outside the range of the 2D array
+			// and then check if the button being pressed is one of the ones adjacent to the blank tile.
+			// If both condition are met then it returns true.
+			if(blank[0]-1 > -1){ if(JBtns[blank[0]-1][blank[1]] == e){ return true;};}
+			if(blank[0]+1 <  N){ if(JBtns[blank[0]+1][blank[1]] == e){ return true;};}
+			if(blank[1]-1 > -1){ if(JBtns[blank[0]][blank[1]-1] == e){ return true;};}
+			if(blank[1]+1 <  N){ if(JBtns[blank[0]][blank[1]+1] == e){ return true;};}
 			return false;
 		}
 		
-		private static boolean winCondition(){
+		private void swapTiles(ActionEvent e){
+			int blank = -1;
+			int num = -1;
+			
+			for(int i=0; i<tiles.length; i++){
+				if(tiles[i] == ""){
+					blank = i;
+				}
+				if(tiles[i] == e.getActionCommand()){
+					num = i;
+				}
+			}
+			
+			tiles[blank] = e.getActionCommand();
+			tiles[num] = "";
+			
+			setButtons();
+		}
+		
+		private static boolean winCondition(String[] tiles){
 			int parsed;
 			for(int i=0; i<tiles.length-1; i++){
 				// This try-catch stops the contents of the empty tile being compared to a number
 				try{
 					parsed = Integer.parseInt(tiles[i]);
+					System.out.println(parsed);
 				}catch(NumberFormatException e) { 
 			    	return false; 
 			    }catch(NullPointerException e) {
 			    	return false;
 			    }
-
-				if(parsed != i+1){
+				if(i+1 != parsed){
 					return false;
 				}
 			}
 			return true;
 		}
-		
-		private void rainbowTiles(){
-			int count = 0;
-			try{
-				while(true){
-					count=count>255?0:count;
-					
-					for(int i=0;i<N;i++){
-						for(int j=0;j<N;j++){
-							JBtns[i][i].setBackground(new Color(count, count, count));
-						}
+
+		private void setColor(){
+			for(int i=0;i<N;i++){
+				for(int j=0;j<N;j++){
+					JBtns[i][j].setBackground(null);
+					if(JBtns[i][j].getActionCommand() == ""){
+						JBtns[i][j].setBackground(new Color(220,220,220));
 					}
-					count++;
-					Thread.sleep(10000);
 				}
-				
-			}catch(InterruptedException e){
-				e.printStackTrace();
 			}
 		}
+
 		
-		@Override
+		private int[] getBlank(){
+			// This method returns the X/Y location of the blank tile in the 2d array
+			// which is then used to determine valid moves
+			int[] blankTile = new int[2];
+			for(int i=0;i<N;i++){
+				for(int j=0;j<N;j++){
+					if(JBtns[i][j].getActionCommand() == ""){
+						blankTile[0] = i;blankTile[1] =j;
+						return blankTile;
+					}
+				}
+			}
+			return blankTile;
+		}
+		
+		//this method is used for testing the win condition. I should probably remove before submitting this...
+		private void order(){
+			for(int i=1; i<tiles.length; i++){
+				tiles[i-1] = Integer.toString(i);
+			}
+			tiles[tiles.length-1] = "";
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == shuffleButton){
-				curr = -1;
-				footerText.setText(" ");
+				footerText.setText("New game!");
 				randomise();
 				setButtons();
-				resetButtons();
-			}else{
-				
-				if(isValidMove(e.getSource())){
-					setTiles(e);
-					swapNumbers(e);
-					rainbowTiles();
-
-				}else{
-					footerText.setText("You need to pick a tile adjacent to the empty tile");
-				}
-				
-				//Check if  the game has been beaten
-				if(winCondition()){
-					rainbowTiles();
+			}else{				
+				//Check if  the game has been beaten by comparing the number array to a sequential one
+				if(!winCondition(tiles)){
+					if(isValidMove(e.getSource())){
+						footerText.setText("");
+						swapTiles(e);
+					}else{
+						footerText.setText("You need to pick a tile adjacent to the empty tile");
+					}
+				}else if(winCondition(tiles)){
 					footerText.setText("WIN!!!");
 				}
 			}
 		}
 		
-	private static Color activeTile = new Color(200,200,255);
-	private static Object selected, prevSelected;
 	private static final int N = 4;
-	private static String[] tiles = new String[N*N];	
+	private  String[] tiles = new String[N*N];	
 	private JPanel footerPanel;
 	private JButton shuffleButton;
-	private List<JPanel>  JPnls = new ArrayList<JPanel>();
+	private List<JPanel> JPnls = new ArrayList<JPanel>();
 	private static JButton[][] JBtns = new JButton[N][N];
 	private JTextArea footerText;
-	private static int prev = -1, curr = -1;
-	private String temp;
 	}
 }
