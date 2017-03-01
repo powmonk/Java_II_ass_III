@@ -21,7 +21,7 @@ public class TileGame {
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-			this.setSize(new Dimension(buttonOn.getIconWidth()*N,buttonOn.getIconHeight()*(N+1)));
+			this.setSize(new Dimension((1+buttonOn.getIconWidth())*N,(8+buttonOn.getIconHeight())*(N+1)));
 			this.setResizable(false);
 			
 			randomise();  //randomises the numbers in the tiles array			
