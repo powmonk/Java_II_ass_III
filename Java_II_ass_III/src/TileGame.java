@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -27,7 +26,7 @@ public class TileGame {
 			
 		
 			
-			this.setMinimumSize(new Dimension(400, 250));
+			this.setMinimumSize(new Dimension(408, 282));
 			this.setResizable(false);
 			
 			randomise();  //randomises the numbers in the tiles array			
@@ -65,25 +64,12 @@ public class TileGame {
 				JPnls.get(i).setLayout(new GridLayout(1,4));
 				//Here the buttons are created by using the inner and outer loop counter for X/Y positions
 				for(int j=0; j<N; j++){
-					JBtns[i][j] = new JButton(lightIcon);
+					JBtns[i][j] = new JButton();
 					JBtns[i][j].addActionListener(this);
-					JBtns[i][j].setIcon(lightIcon);
 					JPnls.get(i).add(JBtns[i][j]);
 				}
 			}
 			setButtons();
-		}
-
-		private void setButtons(){
-			int count = 0;
-			for(int i=0; i<N;i++){
-				for(int j=0; j<N;j++){
-					//The loop counters give X+Y positions to the 2D array
-					JBtns[i][j].setText(tiles[count]);
-					count++;
-				}
-			}
-			setColor();
 		}
 
 		private void randomise(){
@@ -148,11 +134,18 @@ public class TileGame {
 			return true;
 		}
 
-		private void setColor(){
+		private void setButtons(){
+			int count = 0;
 			for(int i=0;i<N;i++){
 				for(int j=0;j<N;j++){
-					JBtns[i][j].setBackground(null);
-					if(JBtns[i][j].getActionCommand() == "") JBtns[i][j].setBackground(new Color(220,220,220));
+					JBtns[i][j].setIcon(buttonOn);
+					JBtns[i][j].setText(tiles[count]);
+					JBtns[i][j].setIconTextGap(-55);
+					JBtns[i][j].setRolloverEnabled(false);
+					JBtns[i][j].setBorderPainted(false);
+					count++;
+					if(JBtns[i][j].getActionCommand() == "") 
+						JBtns[i][j].setIcon(buttonOff);
 				}
 			}
 		}
@@ -192,7 +185,8 @@ public class TileGame {
 		}
 		
 		
-	static Icon lightIcon = new ImageIcon("button.bmp");
+	private Icon buttonOn = new ImageIcon("on.png");
+	private Icon buttonOff = new ImageIcon("off.png");
 	private static final int N = 4;
 	private String[] tiles = new String[N*N];
 	private JPanel footerPanel;
