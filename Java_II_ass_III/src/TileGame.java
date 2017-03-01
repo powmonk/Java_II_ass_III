@@ -67,6 +67,7 @@ public class TileGame {
 				for(int j=0; j<N; j++){
 					JBtns[i][j] = new JButton(lightIcon);
 					JBtns[i][j].addActionListener(this);
+					JBtns[i][j].setIcon(lightIcon);
 					JPnls.get(i).add(JBtns[i][j]);
 				}
 			}
