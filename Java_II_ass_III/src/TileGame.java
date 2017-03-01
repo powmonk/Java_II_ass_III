@@ -17,16 +17,11 @@ public class TileGame {
 		TileFrame frame = new TileFrame();
 		frame.setTitle("Tile Game");
 		frame.setVisible(true);
-		
-		
 	}
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-			
-		
-			
-			this.setMinimumSize(new Dimension(408, 282));
+			this.setSize(new Dimension(buttonOn.getIconWidth()*N,buttonOn.getIconHeight()*(N+1)));
 			this.setResizable(false);
 			
 			randomise();  //randomises the numbers in the tiles array			
@@ -62,6 +57,7 @@ public class TileGame {
 			for(int i=0;i<N;i++){
 				JPnls.add(i, new JPanel());
 				JPnls.get(i).setLayout(new GridLayout(1,4));
+				JPnls.get(i).setBorder(null);
 				//Here the buttons are created by using the inner and outer loop counter for X/Y positions
 				for(int j=0; j<N; j++){
 					JBtns[i][j] = new JButton();
@@ -94,9 +90,10 @@ public class TileGame {
 			//This method uses the X/Y position of the blank tile to determine the
 			//surrounding tiles
 			int[] blank = getBlank();
-			// This block is a bit dense. It first excludes any numbers outside the range of the 2D array
-			// and then check if the button being pressed is one of the ones adjacent to the blank tile.
-			// If both condition are met then it returns true.
+			// This block is a bit dense, but I find it easier to read this way. 
+			// The outer if excludes any numbers outside the range of the 2D array to prevent 
+			// The inner if checks if the button being pressed is one of the ones adjacent to the blank tile.
+			// If the button pressed is one of these it returns true early
 			if(blank[0]-1 > -1){ if(JBtns[blank[0]-1][blank[1]] == e){ return true;};}
 			if(blank[0]+1 <  N){ if(JBtns[blank[0]+1][blank[1]] == e){ return true;};}
 			if(blank[1]-1 > -1){ if(JBtns[blank[0]][blank[1]-1] == e){ return true;};}
@@ -143,6 +140,7 @@ public class TileGame {
 					JBtns[i][j].setIconTextGap(-55);
 					JBtns[i][j].setRolloverEnabled(false);
 					JBtns[i][j].setBorderPainted(false);
+					JBtns[i][j].setMargin(null);
 					count++;
 					if(JBtns[i][j].getActionCommand() == "") 
 						JBtns[i][j].setIcon(buttonOff);
@@ -183,7 +181,6 @@ public class TileGame {
 				}
 			}
 		}
-		
 		
 	private Icon buttonOn = new ImageIcon("on.png");
 	private Icon buttonOff = new ImageIcon("off.png");
