@@ -22,7 +22,6 @@ public class TileGame {
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-//			this.setSize(new Dimension((1+buttonOn.getIconWidth())*N,(8+buttonOn.getIconHeight())*(N+1)));
 			this.setSize(new Dimension(509,494));
 			this.setResizable(false);
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -220,8 +219,6 @@ public class TileGame {
 			}
 		}
 		
-	private Icon buttonOn = new ImageIcon("on.png");
-	private Icon buttonOff = new ImageIcon("off.png");
 	private static final int N = 4;
 	private String[] tiles = new String[N*N];
 	private JPanel footerPanel;
