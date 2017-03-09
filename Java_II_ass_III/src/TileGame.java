@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 
 public class TileGame {
@@ -21,8 +22,10 @@ public class TileGame {
 	
 	static class TileFrame extends JFrame implements ActionListener{
 		public TileFrame(){
-			this.setSize(new Dimension((1+buttonOn.getIconWidth())*N,(8+buttonOn.getIconHeight())*(N+1)));
+//			this.setSize(new Dimension((1+buttonOn.getIconWidth())*N,(8+buttonOn.getIconHeight())*(N+1)));
+			this.setSize(new Dimension(509,494));
 			this.setResizable(false);
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
 			randomise();  //randomises the numbers in the tiles array			
 			addButtons(); //adds N buttons to N panels
@@ -71,21 +74,54 @@ public class TileGame {
 		private void randomise(){
 			int random;
 			ArrayList<String> seqOrder = new ArrayList<String>();
+			do{
+				for(int i=1; i<N*N; i++){
+					seqOrder.add(Integer.toString(i));
+				}
+				seqOrder.add("");
+				
+				int seqSize = seqOrder.size();
+	
+				for(int i=0; i<seqSize; i++){
+					random = (int)(Math.random()*seqOrder.size());
+					tiles[i] = seqOrder.get(random);
+					seqOrder.remove(random);
+				}
+			}while(!isWinnable());
 			
-			for(int i=1; i<N*N; i++){
-				seqOrder.add(Integer.toString(i));
-			}
-			seqOrder.add("");
-			
-			int seqSize = seqOrder.size();
-
-			for(int i=0; i<seqSize; i++){
-				random = (int)(Math.random()*seqOrder.size());
-				tiles[i] = seqOrder.get(random);
-				seqOrder.remove(random);
-			}
 		}
 		
+		private boolean isWinnable() {
+			Boolean rowEven = false;
+			int bs = N;
+			Boolean matEven = bs%2==0?true:false;
+			int inversions=0;
+			int[] tilesInt = new int[(N*N)-1];
+			int count=0;
+			
+			for(int i=1;i<tiles.length;i++){
+				if(tiles[i] == ""){
+					rowEven = Math.ceil((double)(i+1)/N) % 2 == 0?false:true;
+				}else{
+					tilesInt[count]=Integer.parseInt(tiles[i]);
+					count++;
+				}
+			}
+			
+			for(int i=0;i<tilesInt.length-1;i++){
+				if(tilesInt[i] > tilesInt[i+1])
+					inversions+=i=i+1;
+			}			
+			Boolean invEven = inversions%2==0?true:false;
+			
+			if(!matEven && invEven  || matEven && !rowEven == invEven ){
+				return true;
+			}
+
+			return false;
+			
+		}
+
 		private boolean isValidMove(Object e) {
 			//This method uses the X/Y position of the blank tile to determine the
 			//surrounding tiles
@@ -135,15 +171,17 @@ public class TileGame {
 			int count = 0;
 			for(int i=0;i<N;i++){
 				for(int j=0;j<N;j++){
-					JBtns[i][j].setIcon(buttonOn);
+					JBtns[i][j].setIcon(new ImageIcon("assets/db/" + tiles[count] + ".png"));
+					JBtns[i][j].setFont(new Font("Courier",Font.BOLD,50));
 					JBtns[i][j].setText(tiles[count]);
-					JBtns[i][j].setIconTextGap(-55);
+					JBtns[i][j].setIconTextGap(-80);
+					JBtns[i][j].setBorder(null);
 					JBtns[i][j].setRolloverEnabled(false);
 					JBtns[i][j].setBorderPainted(false);
 					JBtns[i][j].setMargin(null);
 					count++;
 					if(JBtns[i][j].getActionCommand() == "") 
-						JBtns[i][j].setIcon(buttonOff);
+						JBtns[i][j].setIcon(new ImageIcon("assets/db/16.png"));
 				}
 			}
 		}
