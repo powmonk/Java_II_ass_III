@@ -108,12 +108,19 @@ public class TileGame {
 			}
 			
 			for(int i=0;i<tilesInt.length-1;i++){
-				if(tilesInt[i] > tilesInt[i+1])
-					inversions+=i=i+1;
+				for(int j=0+i;j<tilesInt.length-i;j++){
+					if(tilesInt[i] > tilesInt[j] )
+						inversions++;
+				}
 			}			
+			
+			System.out.println(inversions);
 			Boolean invEven = inversions%2==0?true:false;
 			
-			if(!matEven && invEven  || matEven && !rowEven == invEven ){
+//			( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
+
+			
+			if(!matEven && invEven  || matEven && rowEven == invEven ){
 				return true;
 			}
 
