@@ -1,8 +1,6 @@
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,8 +19,9 @@ public class TileGame {
 	}
 	
 	static class TileFrame extends JFrame implements ActionListener{
+		private static final long serialVersionUID = 1L;
 		public TileFrame(){
-			this.setSize(new Dimension(509,494));
+			this.setSize(new Dimension(509,481));
 			this.setResizable(false);
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			
@@ -98,7 +97,7 @@ public class TileGame {
 			int[] tilesInt = new int[(N*N)-1];
 			int count=0;
 			
-			for(int i=1;i<tiles.length;i++){
+			for(int i=0;i<tiles.length;i++){
 				if(tiles[i] == ""){
 					rowEven = Math.ceil((double)(i+1)/N) % 2 == 0?false:true;
 				}else{
@@ -106,26 +105,21 @@ public class TileGame {
 					count++;
 				}
 			}
-			
-			for(int i=0;i<tilesInt.length-1;i++){
-				for(int j=0+i;j<tilesInt.length-i;j++){
+
+			for(int i=0;i<tilesInt.length;i++){
+				for(int j=i+1;j<tilesInt.length;j++){
 					if(tilesInt[i] > tilesInt[j] )
 						inversions++;
 				}
-			}			
+			}
 			
-			System.out.println(inversions);
 			Boolean invEven = inversions%2==0?true:false;
 			
-//			( (grid width odd) && (#inversions even) )  ||  ( (grid width even) && ((blank on odd row from bottom) == (#inversions even)) )
-
-			
-			if(!matEven && invEven  || matEven && rowEven == invEven ){
+			if((matEven || invEven) && (!matEven || rowEven) == !invEven){
 				return true;
 			}
-
+		
 			return false;
-			
 		}
 
 		private boolean isValidMove(Object e) {
@@ -199,8 +193,8 @@ public class TileGame {
 			for(int i=0;i<N;i++){
 				for(int j=0;j<N;j++){
 					if(JBtns[i][j].getActionCommand() == ""){
-						blankTile[0] = i;blankTile[1] =j;
-						return blankTile;
+						blankTile[0] = i;
+						blankTile[1] =j;return blankTile;
 					}
 				}
 			}
@@ -226,7 +220,7 @@ public class TileGame {
 			}
 		}
 		
-	private static final int N = 4;
+	private static final int N = 3;
 	private String[] tiles = new String[N*N];
 	private JPanel footerPanel;
 	private JButton shuffleButton;
